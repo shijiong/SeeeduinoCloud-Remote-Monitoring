@@ -7,12 +7,13 @@ Process p;
 
 #define LIGHT_PIN A1
 #define SOUND_PIN A2
+#define GAS_PIN A3
 
 #define NUM_LEDS  1
-ChainableLED leds(4, 5, NUM_LEDS);
 
 #define DHT_PIN A0 
 #define DHT_TYPE DHT11
+ChainableLED leds(4, 5, NUM_LEDS);
 DHT dht(DHT_PIN, DHT_TYPE);
 
 
@@ -23,6 +24,7 @@ int temperature = 0;
 int humidity = 0;
 int light = 0;
 int sound = 0;
+int gas = 0;
 long rgbled = 0;
 int i;
 
@@ -49,10 +51,14 @@ void loop()
     
     light = analogRead(LIGHT_PIN);
     sound = analogRead(SOUND_PIN);
+    gas = analogRead(GAS_PIN);
     humidity = dht.readHumidity();
     temperature = dht.readTemperature();
+    //humidity=45;
+    //temperature=15;
     
-    snprintf(message, sizeof(message), "\"Temperature\":%d,\"Humidity\":%d,\"Light\":%d,\"Sound\":%d", temperature, humidity, light, sound);
+    snprintf(message, sizeof(message), "\"Temperature\":%d,\"Humidity\":%d,\"Light\":%d,\"Sound\":%d,\"Gas\":%d",temperature, humidity, light, sound, gas);
+    //snprintf(message, sizeof(message), "\"Temperature\":%d,\"Humidity\":%d,\"Light\":%d,\"Sound\":%d", temperature, humidity, light, sound);
     Serial.println(message);
     azureMessageSend(message);
     
@@ -72,7 +78,7 @@ void loop()
         }
     }
     
-    delay(1000);
+    delay(30000);
 }
 
 void azureMessageSend(char *buffer)
